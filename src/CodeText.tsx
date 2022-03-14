@@ -1,24 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import cn from "classnames";
+import { CodeTextProps } from "types";
 
-import { getCode } from "./code";
 import styles from "./codetext.module.css";
 
-interface CodeTextProps {
-  styles: string;
-}
-
 export const CodeText = (props: CodeTextProps) => {
-  const [code, setCode] = useState<string[]>([]);
-  useEffect(() => {
-    const { code: newCode } = getCode();
-    setCode(newCode);
-  }, []);
+  const isCurrentWord = useCallback(
+    (row, position) => {
+      return (
+        props.currentBlockPosition.row === row &&
+        props.currentBlockPosition.position === position
+      );
+    },
+    [props.currentBlockPosition]
+  );
 
   return (
     <div className={cn(props.styles, styles.code)}>
-      {code.map((line) => (
-        <p className={styles.codeLine}>{line}</p>
+      {props.code.map((line, rowIndex) => (
+        <p className={styles.codeLine}>
+          {line.map((word, linePosition) => (
+            <span
+              className={cn(
+                isCurrentWord(rowIndex, linePosition) && styles.activeWord
+              )}
+            >
+              {word}&nbsp;
+            </span>
+          ))}
+        </p>
       ))}
     </div>
   );
