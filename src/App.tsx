@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import styles from "./app.module.css";
 import { CodeText } from "./CodeText";
@@ -9,7 +9,15 @@ function App() {
   const [text, setText] = useState("");
   const { code, currentBlockPosition, goToNextWordOrFinish } = useGetCode();
 
-  console.log("code outside", code);
+  useEffect(() => {
+    if (
+      code.length > 0 &&
+      code[currentBlockPosition.row][currentBlockPosition.position].trim() ===
+        ""
+    ) {
+      goToNextWordOrFinish();
+    }
+  }, [code]);
 
   const test = useCallback(() => {
     console.log("code test", code);

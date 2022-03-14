@@ -8,23 +8,43 @@ export const useGetCode = () => {
     const [code, setCode] = useState<string[][]>([]);
 
     useEffect(() => {
-        setCode(mockData.code.split('\n').map(codeLine => codeLine.split(' ')));
+        let splittedDataByLines = mockData.code.split('\n');
+        let firstNotEmptyLine = 0;
+        for (let i = 0; i < splittedDataByLines.length; i++) {
+            if (splittedDataByLines[i].trim() !== '') break;
+
+            firstNotEmptyLine += 1;
+        }
+
+        splittedDataByLines = splittedDataByLines.slice(firstNotEmptyLine);
+
+        setCode(splittedDataByLines.map(codeLine => codeLine.split(' ')));
     }, []);
 
     const goToNextWordOrFinish = useCallback(() => {
-        const newPosition = position + 1;
-        console.log('calc newPosition');
-        if (newPosition >= code[row].length) {
-            // new line or finish typing
-            const newRow = row + 1;
-            if (newRow >= code.length) {
-                // finish typing
-            } else {
-                setRow(newRow);
-                setPosition(0);
+        let newPosition = position;
+        let newRow = row;
+        let isFinished = false;
+
+        do {
+            newPosition += 1;
+
+            if (newPosition >= code[newRow].length) {
+                newRow += 1;
+                newPosition = 0;
+                if (newRow >= code.length) {
+                    isFinished = true;
+                    break;
+                }
             }
-        } else {
+        } while (code[newRow][newPosition].trim() === '');
+
+        if (!isFinished) {
+            setRow(newRow);
             setPosition(newPosition);
+        } else {
+            alert('finished!!');
+            // TODO: show finished status
         }
     }, [row, position, setRow, setPosition, code]);
 
