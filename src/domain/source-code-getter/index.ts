@@ -6,6 +6,7 @@ export const useGetCode = () => {
     const [row, setRow] = useState(0);
     const [position, setPosition] = useState(0);
     const [code, setCode] = useState<string[][]>([]);
+    const [isFinishedTyping, setIsFinishedTyping] = useState(false);
 
     useEffect(() => {
         let splittedDataByLines = mockData.code.split('\n');
@@ -43,8 +44,7 @@ export const useGetCode = () => {
             setRow(newRow);
             setPosition(newPosition);
         } else {
-            alert('finished!!');
-            // TODO: show finished status
+            setIsFinishedTyping(true);
         }
     }, [row, position, setRow, setPosition, code]);
 
@@ -55,6 +55,7 @@ export const useGetCode = () => {
             row,
             position
         },
-        goToNextWordOrFinish
+        goToNextWordOrFinish,
+        isFinishedTyping
     }
 }

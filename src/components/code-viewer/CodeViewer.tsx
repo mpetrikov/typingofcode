@@ -21,9 +21,11 @@ export const CodeViewer = (props: CodeTextProps) => {
         <p className={styles.codeLine}>
           {line.map((word, linePosition) => (
             <span
-              className={cn(
-                isCurrentWord(rowIndex, linePosition) && styles.activeWord
-              )}
+              className={cn({
+                [styles.activeWord]:
+                  isCurrentWord(rowIndex, linePosition) &&
+                  !props.isFinishedTyping,
+              })}
             >
               {word}&nbsp;
             </span>

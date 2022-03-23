@@ -3,12 +3,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { CheckTypingCorrectness } from 'types';
 
 export const useTypingChecker = () => {
-    const isFinishTyping = (currentInputText: string) => {
-        return currentInputText[currentInputText.length - 1] === " ";
-
-        //TODO: check Enter
-    }
-
     const checkTypingCorrectness = (originalText: string, inputText: string): CheckTypingCorrectness => {
         if (originalText === inputText) {
             return {
@@ -33,7 +27,6 @@ export const useTypingChecker = () => {
     }
 
     return {
-        isFinishTyping,
         checkTypingCorrectness
     }
 }

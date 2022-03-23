@@ -10,8 +10,9 @@ function App() {
   const [text, setText] = useState("");
   const [isTypingCorrect, setIsTypingCorrect] = useState(true);
 
-  const { code, currentBlockPosition, goToNextWordOrFinish } = useGetCode();
-  const { isFinishTyping, checkTypingCorrectness } = useTypingChecker();
+  const { code, currentBlockPosition, goToNextWordOrFinish, isFinishedTyping } =
+    useGetCode();
+  const { checkTypingCorrectness } = useTypingChecker();
 
   useEffect(() => {
     if (
@@ -29,11 +30,12 @@ function App() {
       const currentOriginalText =
         code[currentBlockPosition.row][currentBlockPosition.position];
 
-      if (!isFinishTyping(inputText)) {
-        setText(inputText);
-      }
+      setText(inputText);
 
-      if (inputText.slice(0, inputText.length - 1) === currentOriginalText) {
+      if (
+        inputText[inputText.length - 1] === " " &&
+        inputText.trimEnd() === currentOriginalText
+      ) {
         setText("");
         goToNextWordOrFinish();
         setIsTypingCorrect(true);
@@ -61,13 +63,16 @@ function App() {
         styles={styles.codeText}
         code={code}
         currentBlockPosition={currentBlockPosition}
+        isFinishedTyping={isFinishedTyping}
       ></CodeViewer>
-      <TypingArea
-        styles={styles.typingArea}
-        text={text}
-        setText={setNewText}
-        isTypingCorrect={isTypingCorrect}
-      ></TypingArea>
+      {!isFinishedTyping && (
+        <TypingArea
+          styles={styles.typingArea}
+          text={text}
+          setText={setNewText}
+          isTypingCorrect={isTypingCorrect}
+        ></TypingArea>
+      )}
     </div>
   );
 }

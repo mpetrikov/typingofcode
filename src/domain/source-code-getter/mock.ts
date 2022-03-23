@@ -20,7 +20,13 @@ function chunk(array, size = 1) {
 export default chunk
 `;
 
+const codeSmall = `function chunk(array, size = 1) {
+}
+
+export default chunk
+`;
+
 export const mockData = {
-  code,
+  code: codeSmall,
   path: 'https://github.com/lodash/lodash/blob/master/chunk.js',
 };

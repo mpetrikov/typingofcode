@@ -6,7 +6,8 @@ export interface CodeTextProps {
     currentBlockPosition: {
         row: number;
         position: number;
-    }
+    },
+    isFinishedTyping: boolean;
 };
 
 export interface CheckTypingCorrectness {
