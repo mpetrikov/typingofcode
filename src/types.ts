@@ -8,3 +8,8 @@ export interface CodeTextProps {
         position: number;
     }
 };
+
+export interface CheckTypingCorrectness {
+    isCorrect: boolean;
+    wrongPosition: number;
+}

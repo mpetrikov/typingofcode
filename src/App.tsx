@@ -1,13 +1,17 @@
 import React, { useState, useCallback, useEffect } from "react";
 
 import styles from "./app.module.css";
-import { CodeText } from "./CodeText";
-import { TypingArea } from "./TypingArea";
-import { useGetCode } from "./code";
+import { CodeViewer } from "./components/code-viewer/CodeViewer";
+import { TypingArea } from "./components/typing-area/TypingArea";
+import { useGetCode } from "./domain/source-code-getter";
+import { useTypingChecker } from "./domain/typing-checker";
 
 function App() {
   const [text, setText] = useState("");
+  const [isTypingCorrect, setIsTypingCorrect] = useState(true);
+
   const { code, currentBlockPosition, goToNextWordOrFinish } = useGetCode();
+  const { isFinishTyping, checkTypingCorrectness } = useTypingChecker();
 
   useEffect(() => {
     if (
@@ -19,49 +23,50 @@ function App() {
     }
   }, [code]);
 
-  const test = useCallback(() => {
-    console.log("code test", code);
-  }, [code]);
-
-  test();
-
   const setNewText = useCallback(
     (newInputEvent: React.ChangeEvent<HTMLInputElement>) => {
-      const text = newInputEvent.target.value;
-      const textLength = text.length;
+      const inputText = newInputEvent.target.value;
+      const currentOriginalText =
+        code[currentBlockPosition.row][currentBlockPosition.position];
 
-      // check if part of block typing wrong
+      if (!isFinishTyping(inputText)) {
+        setText(inputText);
+      }
 
-      console.log(text);
-      console.log(code);
-
-      if (text[textLength - 1] !== " ") {
-        setText(text);
+      if (inputText.slice(0, inputText.length - 1) === currentOriginalText) {
+        setText("");
+        goToNextWordOrFinish();
+        setIsTypingCorrect(true);
         return;
       }
 
-      if (
-        text.trim() ===
-        code[currentBlockPosition.row][currentBlockPosition.position]
-      ) {
-        setText("");
-        goToNextWordOrFinish();
-      }
+      const typingCorrectnessData = checkTypingCorrectness(
+        currentOriginalText,
+        inputText
+      );
+      setIsTypingCorrect(typingCorrectnessData.isCorrect);
     },
-    [code, setText, goToNextWordOrFinish, currentBlockPosition]
+    [
+      code,
+      setText,
+      goToNextWordOrFinish,
+      currentBlockPosition,
+      checkTypingCorrectness,
+    ]
   );
 
   return (
     <div className={styles.application}>
-      <CodeText
+      <CodeViewer
         styles={styles.codeText}
         code={code}
         currentBlockPosition={currentBlockPosition}
-      ></CodeText>
+      ></CodeViewer>
       <TypingArea
         styles={styles.typingArea}
         text={text}
         setText={setNewText}
+        isTypingCorrect={isTypingCorrect}
       ></TypingArea>
     </div>
   );

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import cn from "classnames";
 import { CodeTextProps } from "types";
 
-import styles from "./codetext.module.css";
+import styles from "./codeviewer.module.css";
 
-export const CodeText = (props: CodeTextProps) => {
+export const CodeViewer = (props: CodeTextProps) => {
   const isCurrentWord = useCallback(
     (row, position) => {
       return (
