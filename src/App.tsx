@@ -47,6 +47,13 @@ function App() {
         inputText
       );
       setIsTypingCorrect(typingCorrectnessData.isCorrect);
+
+      // TODO: create sound hook
+      if (typingCorrectnessData.isCorrect === false) {
+        const audio = new Audio("assets/wrongtyping.mp3");
+        audio.volume = 0.2;
+        audio.play();
+      }
     },
     [
       code,

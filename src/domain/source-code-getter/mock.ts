@@ -20,10 +20,7 @@ function chunk(array, size = 1) {
 export default chunk
 `;
 
-const codeSmall = `function chunk(array, size = 1) {
-}
-
-export default chunk
+const codeSmall = `export default chunk
 `;
 
 export const mockData = {
