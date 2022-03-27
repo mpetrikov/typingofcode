@@ -1,4 +1,13 @@
-type CodeType = string[][];
+export type Literal = {
+    text: string;
+    start: number;
+    end: number;
+    color: string;
+};
+
+export type Block = Literal[];
+
+export type CodeType = Block[][];
 
 export interface CodeTextProps {
     styles: string;

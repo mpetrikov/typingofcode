@@ -10,31 +10,34 @@ function App() {
   const [text, setText] = useState("");
   const [isTypingCorrect, setIsTypingCorrect] = useState(true);
 
-  const { code, currentBlockPosition, goToNextWordOrFinish, isFinishedTyping } =
-    useGetCode();
+  const {
+    code,
+    currentBlockPosition,
+    currentPureBlockText,
+    goToNextWordOrFinish,
+    isFinishedTyping,
+  } = useGetCode();
+
   const { checkTypingCorrectness } = useTypingChecker();
 
   useEffect(() => {
     if (
       code.length > 0 &&
-      code[currentBlockPosition.row][currentBlockPosition.position].trim() ===
-        ""
+      code[currentBlockPosition.row][currentBlockPosition.position].length === 0
     ) {
       goToNextWordOrFinish();
     }
-  }, [code]);
+  }, [code, currentBlockPosition, goToNextWordOrFinish]);
 
   const setNewText = useCallback(
     (newInputEvent: React.ChangeEvent<HTMLInputElement>) => {
       const inputText = newInputEvent.target.value;
-      const currentOriginalText =
-        code[currentBlockPosition.row][currentBlockPosition.position];
 
       setText(inputText);
 
       if (
         inputText[inputText.length - 1] === " " &&
-        inputText.trimEnd() === currentOriginalText
+        inputText.trimEnd() === currentPureBlockText
       ) {
         setText("");
         goToNextWordOrFinish();
@@ -43,7 +46,7 @@ function App() {
       }
 
       const typingCorrectnessData = checkTypingCorrectness(
-        currentOriginalText,
+        currentPureBlockText,
         inputText
       );
       setIsTypingCorrect(typingCorrectnessData.isCorrect);
@@ -56,11 +59,10 @@ function App() {
       }
     },
     [
-      code,
       setText,
       goToNextWordOrFinish,
-      currentBlockPosition,
       checkTypingCorrectness,
+      currentPureBlockText,
     ]
   );
 

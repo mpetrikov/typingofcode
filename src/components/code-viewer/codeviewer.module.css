@@ -8,6 +8,39 @@
   margin: 0;
 }
 
+.literal {
+  opacity: 0.2;
+}
+
 .activeWord {
   color: black;
+  opacity: 1;
+}
+
+.futureWord {
+  color: #d2d2d2;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.blue {
+  color: blue;
+}
+
+.yellow {
+  color: yellow;
+}
+
+.purple {
+  color: purple;
+}
+
+.typingFinished {
+  opacity: 1;
 }

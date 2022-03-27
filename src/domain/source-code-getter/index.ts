@@ -1,15 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
+const esprima = require("esprima");
+
+import { CodeType, Block, Literal } from 'types';
 
 import { mockData } from './mock';
+import { getPureBlockText } from './helpers';
 
 export const useGetCode = () => {
     const [row, setRow] = useState(0);
     const [position, setPosition] = useState(0);
-    const [code, setCode] = useState<string[][]>([]);
+    const [code, setCode] = useState<CodeType>([]);
     const [isFinishedTyping, setIsFinishedTyping] = useState(false);
 
     useEffect(() => {
         let splittedDataByLines = mockData.code.split('\n');
+
         let firstNotEmptyLine = 0;
         for (let i = 0; i < splittedDataByLines.length; i++) {
             if (splittedDataByLines[i].trim() !== '') break;
@@ -19,7 +24,32 @@ export const useGetCode = () => {
 
         splittedDataByLines = splittedDataByLines.slice(firstNotEmptyLine);
 
-        setCode(splittedDataByLines.map(codeLine => codeLine.split(' ')));
+        const localCode: CodeType = new Array(splittedDataByLines.length);
+        let numberLine = 0;
+        for (let line of splittedDataByLines) {
+            const splittedLine = line.split(' ')
+
+            const tokenizedLine = esprima.tokenize(line);
+
+            let blockStartPosition = 0;
+            const lineBlocks: Block[] = [];
+            for (let block of splittedLine) {
+                const literal: Literal = {
+                    start: blockStartPosition,
+                    end: blockStartPosition + block.length,
+                    text: block,
+                    color: ['red', 'green', 'blue', 'yellow', 'purple'][Math.floor(Math.random() * 5)],
+                }
+                lineBlocks.push([literal]);
+
+                blockStartPosition += block.length + 1;
+            }
+            localCode[numberLine] = lineBlocks;
+
+            numberLine++;
+        }
+
+        setCode(localCode);
     }, []);
 
     const goToNextWordOrFinish = useCallback(() => {
@@ -38,7 +68,7 @@ export const useGetCode = () => {
                     break;
                 }
             }
-        } while (code[newRow][newPosition].trim() === '');
+        } while (getPureBlockText(code[newRow][newPosition]) === '');
 
         if (!isFinished) {
             setRow(newRow);
@@ -48,6 +78,8 @@ export const useGetCode = () => {
         }
     }, [row, position, setRow, setPosition, code]);
 
+    const currentPureBlockText = code.length > 0 ? getPureBlockText(code[row][position]) : '';
+
     return {
         code,
         path: mockData.path,
@@ -55,6 +87,7 @@ export const useGetCode = () => {
             row,
             position
         },
+        currentPureBlockText,
         goToNextWordOrFinish,
         isFinishedTyping
     }

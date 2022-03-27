@@ -20,7 +20,7 @@ function chunk(array, size = 1) {
 export default chunk
 `;
 
-const codeSmall = `export default chunk
+const codeSmall = `import { sqrt } from "math.js"
 `;
 
 export const mockData = {
